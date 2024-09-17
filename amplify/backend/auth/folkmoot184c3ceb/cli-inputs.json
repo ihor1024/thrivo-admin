@@ -1,0 +1,117 @@
+{
+  "version": "1",
+  "cognitoConfig": {
+    "identityPoolName": "folkmoot184c3ceb_identitypool_184c3ceb",
+    "allowUnauthenticatedIdentities": true,
+    "resourceNameTruncated": "folkmo184c3ceb",
+    "userPoolName": "folkmoot184c3ceb_userpool_184c3ceb",
+    "autoVerifiedAttributes": [
+      "email"
+    ],
+    "mfaConfiguration": "OPTIONAL",
+    "mfaTypes": [
+      "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Thrivo Omni Verification Code",
+    "emailVerificationMessage": "Your Thrivo Omni Verification Code is: {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+      "email",
+      "name"
+    ],
+    "aliasAttributes": [],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+      "email",
+      "name"
+    ],
+    "userpoolClientReadAttributes": [
+      "email",
+      "given_name",
+      "name",
+      "nickname",
+      "phone_number",
+      "preferred_username",
+      "picture"
+    ],
+    "userpoolClientLambdaRole": "folkmo184c3ceb_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "authSelections": "identityPoolAndUserPool",
+    "resourceName": "folkmoot184c3ceb",
+    "serviceName": "Cognito",
+    "useDefault": "manual",
+    "sharedId": "184c3ceb",
+    "userPoolGroupList": [
+      "AdminAdmin",
+      "Users"
+    ],
+    "userPoolGroups": true,
+    "usernameAttributes": [
+      "email, phone_number"
+    ],
+    "usernameCaseSensitive": false,
+    "verificationBucketName": "folkmoot184c3cebverificationbucket",
+    "adminQueries": true,
+    "adminQueryGroup": "AdminAdmin",
+    "hostedUI": true,
+    "hostedUIDomainName": "folkmoot184c3ceb-184c3ceb",
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"name\":\"name\",\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"name\":\"name\",\"username\":\"sub\"}},{\"ProviderName\":\"SignInWithApple\",\"authorize_scopes\":\"email name\",\"AttributeMapping\":{\"email\":\"email\",\"name\":\"name\"}}]",
+    "authProvidersUserPool": [
+      "Facebook",
+      "Google",
+      "SignInWithApple"
+    ],
+    "triggers": {
+      "PostConfirmation": [
+        "add-to-group"
+      ]
+    },
+    "authRoleArn": {
+      "Fn::GetAtt": [
+        "AuthRole",
+        "Arn"
+      ]
+    },
+    "unauthRoleArn": {
+      "Fn::GetAtt": [
+        "UnauthRole",
+        "Arn"
+      ]
+    },
+    "breakCircularDependency": false,
+    "useEnabledMfas": false,
+    "dependsOn": [
+      {
+        "category": "function",
+        "resourceName": "folkmoot184c3cebPostConfirmation",
+        "triggerProvider": "Cognito",
+        "attributes": [
+          "Arn",
+          "Name"
+        ]
+      }
+    ],
+    "parentStack": {
+      "Ref": "AWS::StackId"
+    },
+    "permissions": [
+      "{\n  \"policyName\": \"AddToGroupCognito\",\n  \"trigger\": \"PostConfirmation\",\n  \"effect\": \"Allow\",\n  \"actions\": [\n    \"cognito-idp:AdminAddUserToGroup\",\n    \"cognito-idp:GetGroup\",\n    \"cognito-idp:CreateGroup\"\n  ],\n  \"resource\": {\n    \"paramType\": \"!GetAtt\",\n    \"keys\": [\n      \"UserPool\",\n      \"Arn\"\n    ]\n  }\n}"
+    ],
+    "authTriggerConnections": [
+      "{\"triggerType\":\"PostConfirmation\",\"lambdaFunctionName\":\"folkmoot184c3cebPostConfirmation\"}"
+    ],
+    "oAuthSecretsPathAmplifyAppId": "dc7guxjvcw1wg",
+    "authProviders": [
+      "graph.facebook.com",
+      "accounts.google.com",
+      "appleid.apple.com"
+    ],
+    "thirdPartyAuth": true,
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"folkmoot://\"],\"LogoutURLs\":[\"folkmoot://\"]}"
+  }
+}

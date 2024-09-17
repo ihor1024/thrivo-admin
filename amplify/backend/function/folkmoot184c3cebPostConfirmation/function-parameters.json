@@ -1,0 +1,18 @@
+{
+  "trigger": true,
+  "modules": [
+    "add-to-group"
+  ],
+  "parentResource": "folkmoot184c3ceb",
+  "functionName": "folkmoot184c3cebPostConfirmation",
+  "resourceName": "folkmoot184c3cebPostConfirmation",
+  "parentStack": "auth",
+  "triggerEnvs": "[]",
+  "triggerDir": "/snapshot/repo/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/PostConfirmation",
+  "triggerTemplate": "PostConfirmation.json.ejs",
+  "triggerEventPath": "PostConfirmation.event.json",
+  "roleName": "folkmoot184c3cebPostConfirmation",
+  "skipEdit": true,
+  "GROUP": "Users",
+  "enableCors": false
+}

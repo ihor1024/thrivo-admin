@@ -1,0 +1,40 @@
+{
+  "features": {
+    "graphqltransformer": {
+      "addmissingownerfields": true,
+      "validatetypenamereservedwords": true,
+      "useexperimentalpipelinedtransformer": true,
+      "enableiterativegsiupdates": false,
+      "secondarykeyasgsi": true,
+      "skipoverridemutationinputtypes": true,
+      "securityEnhancementNotification": false,
+      "showfieldauthnotification": true,
+      "transformerversion": 2,
+      "suppressschemamigrationprompt": true,
+      "useSubUsernameForDefaultIdentityClaim": true,
+      "showFieldAuthNotification": false
+    },
+    "frontend-ios": {
+      "enablexcodeintegration": true
+    },
+    "auth": {
+      "enablecaseinsensitivity": true
+    },
+    "codegen": {
+      "useappsyncmodelgenplugin": true,
+      "usedocsgeneratorplugin": true,
+      "usetypesgeneratorplugin": true,
+      "cleangeneratedmodelsdirectory": true,
+      "retaincasestyle": true
+    },
+    "appsync": {
+      "generategraphqlpermissions": true
+    },
+    "project": {
+      "overrides": true
+    }
+  },
+  "debug": {
+    "shareProjectConfig": false
+  }
+}

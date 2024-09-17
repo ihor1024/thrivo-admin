@@ -1,0 +1,80 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-folkmoot-dev-125329-authRole",
+      "UnauthRoleArn": "arn:aws:iam::982453831659:role/amplify-folkmoot-dev-125329-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::982453831659:role/amplify-folkmoot-dev-125329-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+      "UnauthRoleName": "amplify-folkmoot-dev-125329-unauthRole",
+      "StackName": "amplify-folkmoot-dev-125329",
+      "StackId": "arn:aws:cloudformation:us-east-2:982453831659:stack/amplify-folkmoot-dev-125329/c6d3ff60-8da3-11eb-bada-0600f1d4ce0c",
+      "AmplifyAppId": "dc7guxjvcw1wg"
+    },
+    "categories": {
+      "auth": {
+        "folkmoot184c3ceb": {
+          "facebookAppId": "156868869554768",
+          "googleClientId": "319838102125-iighvg1eavikd2jprlk8kcc10m7kd6r1.apps.googleusercontent.com",
+          "appleAppId": "org.thrivotechnologies.omni"
+        },
+        "userPoolGroups": {}
+      },
+      "function": {
+        "checkCodeAndAddToGroup": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/checkCodeAndAddToGroup-53436634563449626e32-build.zip"
+        },
+        "AdminQueriesd4001f30": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/AdminQueriesd4001f30-374c4763637632654464-build.zip"
+        },
+        "folkmoot184c3cebPostConfirmation": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/folkmoot184c3cebPostConfirmation-5a7479746c2b4a643961-build.zip",
+          "GROUP": "Users"
+        },
+        "folkmootPreTokenGeneration": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/folkmootPreTokenGeneration-6d544a746c584a4a4334-build.zip"
+        },
+        "getShippingLabel": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/getShippingLabel-577958624b6271437952-build.zip"
+        },
+        "listCarriers": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/listCarriers-532f2f75587a2f6a4746-build.zip"
+        },
+        "listServices": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/listServices-614854513631346c7537-build.zip"
+        },
+        "listRates": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/listRates-44517336676c52573456-build.zip"
+        },
+        "listPackages": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/listPackages-48586170356233416c61-build.zip"
+        },
+        "voidShipment": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/voidShipment-664f4162665256582b5a-build.zip"
+        },
+        "addUserToSalon": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/addUserToSalon-634c6f467a4a6f674e47-build.zip"
+        },
+        "getLatestColors": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/getLatestColors-6c4d724f546f65577233-build.zip"
+        },
+        "loadOrCreateSalon": {
+          "deploymentBucketName": "amplify-folkmoot-dev-125329-deployment",
+          "s3Key": "amplify-builds/loadOrCreateSalon-4a697866342f667a4572-build.zip"
+        }
+      }
+    }
+  }
+}

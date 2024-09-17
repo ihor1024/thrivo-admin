@@ -1,0 +1,447 @@
+{
+  "api": {
+    "AdminQueries": {
+      "authorizationType": "AMAZON_COGNITO_USER_POOLS",
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        },
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "AdminQueriesd4001f30"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "folkmoot": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "apiKeyConfig": {
+                "apiKeyExpirationDate": "2024-07-22T19:37:42.549Z",
+                "apiKeyExpirationDays": 365,
+                "description": "Thrivo_App_key"
+              },
+              "authenticationType": "API_KEY"
+            },
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
+            "userPoolConfig": {
+              "userPoolId": "authfolkmoot184c3ceb"
+            }
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
+  "auth": {
+    "folkmoot184c3ceb": {
+      "customAuth": false,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Arn",
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "folkmoot184c3cebPostConfirmation",
+          "triggerProvider": "Cognito"
+        }
+      ],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OPTIONAL",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL",
+          "NAME"
+        ],
+        "socialProviders": [
+          "FACEBOOK",
+          "GOOGLE",
+          "APPLE"
+        ],
+        "usernameAttributes": [
+          "EMAIL",
+          "PHONE_NUMBER"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID",
+            "IdentityPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
+    }
+  },
+  "function": {
+    "AdminQueriesd4001f30": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "addUserToSalon": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "checkCodeAndAddToGroup": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "folkmoot184c3cebPostConfirmation": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "folkmootPreTokenGeneration": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "GraphQLAPIIdOutput"
+          ],
+          "category": "api",
+          "resourceName": "folkmoot"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getLatestColors": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "getShippingLabel": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "listCarriers": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "listPackages": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "listRates": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "listServices": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "loadOrCreateSalon": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_auth_folkmoot184c3ceb_appleAppId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ]
+    },
+    "AMPLIFY_auth_folkmoot184c3ceb_facebookAppId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ]
+    },
+    "AMPLIFY_auth_folkmoot184c3ceb_googleClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "folkmoot184c3ceb"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueriesd4001f30_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesd4001f30"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueriesd4001f30_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueriesd4001f30"
+        }
+      ]
+    },
+    "AMPLIFY_function_addUserToSalon_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "addUserToSalon"
+        }
+      ]
+    },
+    "AMPLIFY_function_addUserToSalon_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "addUserToSalon"
+        }
+      ]
+    },
+    "AMPLIFY_function_checkCodeAndAddToGroup_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "checkCodeAndAddToGroup"
+        }
+      ]
+    },
+    "AMPLIFY_function_checkCodeAndAddToGroup_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "checkCodeAndAddToGroup"
+        }
+      ]
+    },
+    "AMPLIFY_function_folkmoot184c3cebPostConfirmation_GROUP": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "folkmoot184c3cebPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_folkmoot184c3cebPostConfirmation_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "folkmoot184c3cebPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_folkmoot184c3cebPostConfirmation_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "folkmoot184c3cebPostConfirmation"
+        }
+      ]
+    },
+    "AMPLIFY_function_folkmootPreTokenGeneration_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "folkmootPreTokenGeneration"
+        }
+      ]
+    },
+    "AMPLIFY_function_folkmootPreTokenGeneration_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "folkmootPreTokenGeneration"
+        }
+      ]
+    },
+    "AMPLIFY_function_getLatestColors_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getLatestColors"
+        }
+      ]
+    },
+    "AMPLIFY_function_getLatestColors_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getLatestColors"
+        }
+      ]
+    },
+    "AMPLIFY_function_getShippingLabel_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getShippingLabel"
+        }
+      ]
+    },
+    "AMPLIFY_function_getShippingLabel_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "getShippingLabel"
+        }
+      ]
+    },
+    "AMPLIFY_function_listCarriers_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listCarriers"
+        }
+      ]
+    },
+    "AMPLIFY_function_listCarriers_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listCarriers"
+        }
+      ]
+    },
+    "AMPLIFY_function_listPackages_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listPackages"
+        }
+      ]
+    },
+    "AMPLIFY_function_listPackages_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listPackages"
+        }
+      ]
+    },
+    "AMPLIFY_function_listRates_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listRates"
+        }
+      ]
+    },
+    "AMPLIFY_function_listRates_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listRates"
+        }
+      ]
+    },
+    "AMPLIFY_function_listServices_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listServices"
+        }
+      ]
+    },
+    "AMPLIFY_function_listServices_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "listServices"
+        }
+      ]
+    },
+    "AMPLIFY_function_loadOrCreateSalon_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loadOrCreateSalon"
+        }
+      ]
+    },
+    "AMPLIFY_function_loadOrCreateSalon_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loadOrCreateSalon"
+        }
+      ]
+    },
+    "AMPLIFY_function_voidShipment_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "voidShipment"
+        }
+      ]
+    },
+    "AMPLIFY_function_voidShipment_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "voidShipment"
+        }
+      ]
+    }
+  },
+  "storage": {}
+}
