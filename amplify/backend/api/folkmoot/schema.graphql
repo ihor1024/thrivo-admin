@@ -1,0 +1,472 @@
+# lol this is relational, SQL af.
+# TODO: turn to single table system and remove ourselves from Amplify
+
+enum statusType {
+  INIT
+  NO_ACCESS
+  ACCESS
+  READY
+}
+
+enum userType {
+  Client
+  Stylist
+  Manager
+  SalonOwner
+  Admin
+}
+
+type Location {
+  address1: String
+  address2: String
+  address3: String
+  locality: String
+  region: String
+  postalCode: String
+  country: String
+  geo: AWSJSON
+  raw: AWSJSON
+}
+
+type Log {
+  dateTime: AWSDateTime
+  msg: String
+}
+
+type Comment {
+  id: ID!
+  content: String!
+  authorId: ID!
+  dateTime: AWSDateTime
+  # replies: [Comment]
+}
+
+type Photo {
+  id: ID!
+  url: AWSURL
+  caption: Comment
+  dateTime: AWSDateTime
+}
+
+type Shipment {
+  raw: AWSJSON,
+  shipId: String,
+  tracking: String,
+  carrier: String,
+  status: String,
+  fromLocation: Location,
+  toLocation: Location,
+}
+
+type AccessCode @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, create, update, delete]},
+    ##{allow: public}
+  ]
+) @mapsTo(name: "authRoleKeyTable") {
+  id: ID! 
+  multiUse: Boolean!
+  allowedGroups: [String]!
+  salon: Salon @belongsTo
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type SubscriptionPlan @model @auth(
+  rules: [
+    {allow: owner, operations: [create, read, update]},
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: groups, groups: ["Users"], operations: [read]},
+    {allow: private, operations: [read]},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},]) {
+  id: ID!,
+  monthlyKits: Int!
+  startDate: AWSDateTime!
+  historicalKits: [Int]
+  salonGroups: [String]
+  kitPrice: Float
+  monthlyPrice: Float
+
+  salon: Salon @belongsTo
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# Salons have Users...
+# Salons have Devices controled by their Users
+type Salon @model @auth(
+  rules: [
+    {allow: owner}
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: groups, groupsField: "defaultSalonGroups", operations: [read]},
+    {allow: groups, groupsField: "defaultSalonAdminGroups", operations: [read, update]}
+    ]) {
+  id: ID!
+  placeId: String
+  name: String!
+  type: String
+  phone: String
+  location: Location
+  comments: [Comment]
+  
+  defaultSalonGroups: [String]
+  defaultSalonAdminGroups: [String]
+
+  privileges: AWSJSON
+  shipping: AWSJSON
+
+  users: [User] @hasMany
+  devices: [Device] @hasMany
+
+  #d: [De] @hasMany
+  #inventory: [Inventory] @hasMany
+  
+  subscription: [SubscriptionPlan] @hasMany
+  accessCodes: [AccessCode] @hasMany
+  preferences: AWSJSON
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# Users have Clients....
+type User @model @auth(
+  rules: [
+    {allow: owner},
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: groups, groupsField: "salonAdmins", operations: [read, update, delete]},]) {
+  id: ID!
+  type: userType
+  tenantClaims: [String] @auth (rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner, operations: [read, create]},
+    {allow: groups, groupsField: "salonAdmins", operations: [read]}
+  ])
+  name: String!   # @index(name: "byName",  queryField: "userByName"
+  email: AWSEmail @index(name: "byEmail", queryField: "userByEmail")
+  phone: String #@index(name: "byPhone", queryField: "userByPhone"
+  photos: [Photo]
+  salon: Salon @belongsTo
+  salonGroups: [String] @auth (rules: [
+      {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+      {allow: owner, operations: [read, create]},
+      {allow: groups, groupsField: "salonAdmins", operations:[read, update]}
+    ])
+  salonAdmins: [String] @auth (rules: [
+      {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+      {allow: owner, operations: [read, create]},
+      {allow: groups, groupsField: "salonAdmins", operations:[read]}
+    ])
+  comments: [Comment]
+  status: statusType @default(value: "INIT")
+  clients: [Client] @hasMany
+  preferences: AWSJSON
+
+  appVersion: AWSJSON
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+# Clients have Mixes?
+type Client @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]}
+  ]
+) {
+  id: ID!
+  name: String!
+  email: AWSEmail
+  phone: String
+  
+  stylist: User @belongsTo
+  salonGroups: [String]
+  salonAdminGroups: [String]
+  formulas: [Formula] @hasMany
+
+  location: Location
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Formula @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    #{allow: public, operations: [read]},
+    #{allow: private, operations: [read]},
+    {allow: owner},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]}]) {
+  id: ID!
+  client: Client @belongsTo
+  title: String
+  
+  components: [Component] @hasMany
+  comments: [Comment]
+  photos: [Photo]
+  
+  tags: [String]
+  
+  #previous: Formula @hasOne
+
+  mixtures: [Mixture] @hasMany
+
+  salonGroups: [String]
+  salonAdminGroups: [String]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Component @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    #{allow: public, operations: [read]},
+    {allow: owner},
+    #{allow: private, operations: [read]},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]}]) {
+  id: ID!
+  amount: Int @default(value: "0")
+  amountFloat: Float
+  color: Color @hasOne
+  comments: [Comment]
+  formula: Formula @belongsTo
+  salonGroups: [String]
+  salonAdminGroups: [String]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Mixture @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]}]) {
+  id: ID!
+  #stylist: User @hasOne
+  mixTrace: [MixTrace] @hasMany
+  waste: Float
+  bowl: Float
+  leftOver: Int
+  bowlWeight: Int
+  status: String
+  title: String
+  comments: [Comment]
+  photos: [Photo]
+  formula: Formula @belongsTo
+
+  properties: AWSJSON
+
+  salonGroups: [String]
+  salonAdminGroups: [String]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type MixTrace @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]}]) {
+  id: ID!
+  mixture: Mixture @belongsTo
+  pouredAmount: Int @default(value: "0")
+  amount: Float
+  color: Color @hasOne
+  component: Component @hasOne
+  comments: [Comment]
+  salonGroups: [String]
+  salonAdminGroups: [String]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type BatchInfo @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner, operations: [create, read, update]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read]},
+    {allow: groups, groupsField: "salonGroups", operations: [read]}
+  ]
+) {
+  id: ID!
+  dateTime: AWSDateTime
+  msg: String
+
+  cycleCount: Int
+  cancelCount: Int
+
+  meta: AWSJSON
+
+  salonAdminGroups: [String]
+  salonGroups: [String]
+  deviceBatchedCyclesId: ID @default(value: "1")
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type IssueTracking @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner, operations: [create, read]},
+  ]
+) {
+  id: ID!
+  msg: String
+  obj: AWSJSON
+  origin: String
+  user: User @hasOne
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type CycleInfo @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner, operations: [create, read, update]},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read]}
+  ]
+) {
+  id: ID!
+  dateTime: AWSDateTime
+  msg: String
+
+  formula: Formula @hasOne
+  mixture: Mixture @hasOne
+  stylist: User @hasOne
+
+  shipment: Shipment
+
+  cycleCount: Int
+  price: Int
+  tags: [String]
+  properties: AWSJSON
+
+  salonAdminGroups: [String]
+  salonGroups: [String]
+  deviceTaggedCyclesId: ID @default(value: "1")
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Device @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"], operations: [read, update, delete]},
+    {allow: owner},
+    {allow: groups, groupsField: "salonAdminGroups", operations: [read, update]},
+    {allow: groups, groupsField: "salonGroups", operations: [read]},
+    ]) {
+  id: ID!
+  
+  serial: String
+  status: String
+  properties: AWSJSON
+  salon: Salon @belongsTo
+
+  log: [Log]
+  
+  taggedCycles: [CycleInfo] @hasMany
+  batchedCycles: [BatchInfo] @hasMany
+  
+  curatedData: [AWSJSON]
+
+  salonAdminGroups: [String]
+  salonGroups: [String]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Company @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"]},
+    #{allow: public, operations: [read]},
+    #{allow: private, operations: [read]},
+    {allow: groups, groups: ["Users"], operations: [read]}]) {
+  id: ID!
+  key: String!
+  name: String!
+  lines: [ColorLine] @hasMany
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+} 
+
+type ColorLine @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"]},
+    #{allow: public, operations: [read]},
+    #{allow: private, operations: [read]},
+    {allow: groups, groups: ["Users"], operations: [read]}]) {
+  id: ID!
+  name: String!
+  company: String!
+  description: String
+  type: String
+  
+  statements: [String]
+
+  size: String
+  units: String
+
+  photos: [Photo]
+  photoIds: [ID]
+  childrenIds: [ID]
+  parentIds: [ID]
+  colors: [Color] @hasMany
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Color @model @auth(
+  rules: [
+    {allow: groups, groups: ["AdminAdmin"]},
+    #{allow: public, operations: [read]},
+    #{allow: private, operations: [read]},
+    {allow: groups, groups: ["Users"], operations: [read]}]) {
+  id: ID!
+  level: String
+  colorKey: String!  #@mapsTo(name: "colorKey"
+  altKey: String
+  segment: String
+
+  colorType: String! #@mapsTo(name: "colorType"
+  colorLine: String! #@mapsTo(name: "colorLine"
+  material: String
+
+  size: String
+  units: String
+
+  line: ColorLine @belongsTo
+
+  company: String!
+  
+  ingredients: [String]
+  description: String
+  hexColor: String
+
+  photoIds: [ID]
+  photos: [Photo]
+  
+  #comments: [Comment]
+
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}

@@ -1,0 +1,13 @@
+{
+  "AppSyncApiName": "folkmoot",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authfolkmoot184c3ceb",
+      "Outputs.UserPoolId"
+    ]
+  },
+  "AuthModeLastUpdated": "2023-07-23T19:37:46.360Z",
+  "CreateAPIKey": 1
+}
